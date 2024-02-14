@@ -1,5 +1,4 @@
-const Sequelize = require('sequelize'); 
-const passport = require('passport'); 
+const Sequelize = require('sequelize');  
 require("dotenv").config()
 
 const connectionString = process.env.ELEPHANTSQL_URL;

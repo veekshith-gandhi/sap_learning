@@ -1,14 +1,33 @@
 const express  = require('express');
-const sequelize = require('./db');
+const sequelize = require('./config/db');
 const employeeRouter = require("./routes/employee.route")
 const departmentRouter = require("./routes/department.route")
+const session = require("express-session");
+
+const app = express()
+
+//The session function takes a configuration object as a parameter.
+// We use secret to sign the session ID cookie which can be any string. 
+//This could be a good place to use a process variable to keep the secret out of your code.
+//initalized before assigning passport
+app.use(session({
+  secret: 'secret',
+  saveUninitialized: true,
+  resave: true
+}));
+
+const passport = require('passport');
+require('./config/passport')(passport);
 require("dotenv").config();
 
 const Port =  process.env.PORT || 8000
-const app = express()
 
 //Parse incoming request with json payload
 app.use(express.json())
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use("/employees",employeeRouter)
 app.use("/departments",departmentRouter)
@@ -21,14 +40,33 @@ sequelize
   .authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
+      // Initializing Sequelize tables
+      sequelize.sync()
+      // .then(() => {
+      //   console.log(`Database & tables created!`);
+
+      //   const Port = 4000;
+      //   app.listen(Port, () => {
+      //     console.log(`Listening on PORT ${Port}`);
+      //   });
+      // })
+      .catch(err => {
+        console.error('Unable to create tables:', err);
+      });
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
+  
 app.listen(Port,()=>{
     console.log(`Listeing to PORT ${Port}`)
 })
 
+// sequelize
+//   .sync({ force: true })
+//   .then(() => {
+//     console.log(`Database & tables created!`);
+//   });
 
 
 

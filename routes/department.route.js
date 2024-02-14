@@ -4,7 +4,7 @@ const router = express.Router()
 
 
 //working in browser so used get
-router.get("/",createDepartment)
+router.post("/",createDepartment)
 
 
 module.exports = router

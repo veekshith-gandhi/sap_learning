@@ -1,10 +1,10 @@
 const express = require("express")
-const createEmploye = require("../controller/employee.controller")
+const passport = require('passport');
+const {createEmploye,registerEmploye} = require("../controller/employee.controller")
 const router = express.Router()
+require("../config/passport")(passport)
 
-
-//working in browser so used get
-router.get("/",createEmploye)
-
+router.post("/create",createEmploye)
+router.post("/register",registerEmploye)
 
 module.exports = router
